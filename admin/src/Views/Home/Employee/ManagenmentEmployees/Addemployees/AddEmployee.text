@@ -1,0 +1,104 @@
+import React, { useState } from 'react';
+import { StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Make sure to import AsyncStorage
+import styles from '../../../styles';
+
+const AddEmployee = () => {
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
+  const [idNumber, setIdNumber] = useState('');
+  const [dob, setDob] = useState('');
+  const [address, setAddress] = useState('');
+  const [error, setError] = useState(''); // State to store error messages
+  const navigation = useNavigation();
+
+  const handleAddEmployee = async () => {
+    setError(''); // Clear any previous errors
+
+    // Retrieve admin_id from AsyncStorage
+    const admin_id = await AsyncStorage.getItem('admin_id');
+
+    if (!admin_id) {
+      setError('Admin ID is missing.');
+      return;
+    }
+
+    // Validate required fields
+    if (!fullName || !phoneNumber || !password || !idNumber || !dob || !address) {
+      setError('All fields are required');
+      return;
+    }
+
+    const employeeData = {
+      fullName,
+      phoneNumber,
+      password,
+      idNumber,
+      dob,
+      address,
+      admin_id, // Add admin_id to employeeData
+    };
+
+    navigation.navigate('PayrollCalculationMethod', { employeeData });
+  };
+
+  return (
+    <View style={styles.container}>
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      <TouchableOpacity style={styles.addButton} onPress={handleAddEmployee}>
+        <Text style={styles.addButtonText}>Tiếp tục</Text>
+      </TouchableOpacity>
+      <Text style={styles.label}>Tên nhân viên</Text>
+      <TextInput
+        style={styles.input}
+        value={fullName}
+        onChangeText={setFullName}
+        keyboardType="default"
+        autoCapitalize="words"
+      />
+      <Text style={styles.label}>Số điện thoại</Text>
+      <TextInput
+        style={styles.input}
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+        keyboardType="phone-pad"
+      />
+      <Text style={styles.label}>Mật khẩu</Text>
+      <TextInput
+        style={styles.input}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        autoCapitalize="none"
+      />
+      <Text style={styles.label}>Số CMND</Text>
+      <TextInput
+        style={styles.input}
+        value={idNumber}
+        onChangeText={setIdNumber}
+        keyboardType="default"
+        autoCapitalize="none"
+      />
+      <Text style={styles.label}>Ngày sinh</Text>
+      <TextInput
+        style={styles.input}
+        value={dob}
+        onChangeText={setDob}
+        keyboardType="default"
+        autoCapitalize="none"
+      />
+      <Text style={styles.label}>Địa chỉ</Text>
+      <TextInput
+        style={styles.input}
+        value={address}
+        onChangeText={setAddress}
+        keyboardType="default"
+        autoCapitalize="none"
+      />
+    </View>
+  );
+};
+
+export default AddEmployee;
