@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -49,9 +49,15 @@ export default function Employees() {
     }
   };
 
+  // Correct useFocusEffect format
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       fetchEmployees();
+
+      // Cleanup function (optional)
+      return () => {
+        console.log('Screen is unfocused, cleanup if needed');
+      };
     }, [])
   );
 
@@ -108,9 +114,10 @@ export default function Employees() {
   const formatNumber = (number) => {
     return number.toLocaleString('vi-VN', { maximumFractionDigits: 0 });
   };
+
   return (
     <View style={styles.container}>
-            <View style={styles.amountContainer}>
+      <View style={styles.amountContainer}>
         <Text style={styles.amountLabel}>TỔNG PHẢI TRẢ</Text>
         <View style={styles.amountValueContainer}>
           <Text style={styles.amountValue}>{formatNumber(totalBalance)} VND</Text>
@@ -164,7 +171,7 @@ export default function Employees() {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-    <Modal
+      <Modal
         animationType="slide"
         transparent={true}
         visible={managementModalVisible}
@@ -342,7 +349,7 @@ const styles = StyleSheet.create({
     width: '50%',
     marginTop: 16,
   },
-    managementButton: {
+  managementButton: {
     width: '48%',
     padding: 40,
     backgroundColor: '#5e749e',

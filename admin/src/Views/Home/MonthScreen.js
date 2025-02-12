@@ -36,8 +36,15 @@ export default function MonthScreen() {
     }
   }, []);
 
-  useFocusEffect(fetchEmployees);
-
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        await fetchEmployees();
+      };
+      fetchData();
+    }, [fetchEmployees])
+  );
+  
   const selectEmployee = (employeeId) => {
     const employee = employees.find(emp => emp.id === employeeId);
     setSelectedEmployee(employee);
@@ -189,6 +196,7 @@ export default function MonthScreen() {
   };
 
   return (
+    <>
     <ScrollView style={styles.calendarContainer}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handlePrevMonth}>
@@ -204,9 +212,7 @@ export default function MonthScreen() {
           <Text key={index} style={styles.weekday}>{day}</Text>
         ))}
       </View>
-      <View style={styles.calendar}>
-        {renderDays()}
-      </View>
+      <View style={styles.calendar}>{renderDays()}</View>
       <View style={styles.buttons}>
         <TouchableOpacity
           style={[styles.statusButton, selectedButton === 'Đủ' && styles.selectedStatusButton]}
@@ -235,7 +241,7 @@ export default function MonthScreen() {
       <ActionSheet
         ref={actionSheetRef}
         title={'Select Employee'}
-  options={[...employees.map(emp => emp.name), 'Cancel']} // Include 'Cancel' option
+        options={[...employees.map(emp => emp.name), 'Cancel']}
         cancelButtonIndex={employees.length}
         onPress={(buttonIndex) => {
           if (buttonIndex !== employees.length) {
@@ -244,24 +250,31 @@ export default function MonthScreen() {
           }
         }}
       />
-      {confirmModalVisible && (
-        <View style={styles.confirmModalContainer}>
-          <View style={styles.confirmModalContent}>
-            <Text style={styles.confirmModalMessage}>
-              Bạn có chắc chắn muốn {selectedButton} cho ngày {selectedDay.format('DD-MM-YYYY')}?
-            </Text>
-            <View style={styles.confirmModalButtons}>
-              <TouchableOpacity onPress={updateOrAddAttendance} style={styles.confirmButton}>
-                <Text style={styles.confirmButtonText}>Yes</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleModalClose} style={styles.cancelButton}>
-                <Text style={styles.cancelButtonText}>No</Text>
-              </TouchableOpacity>
-            </View>
+    </ScrollView>
+  
+    {confirmModalVisible && (
+      <View style={styles.confirmModalContainer}>
+        <View style={styles.confirmModalContent}>
+        <Text style={styles.confirmModalMessage}>
+  Bạn có chắc chắn muốn
+  <Text style={[styles.confirmModalStatus, { color: selectedButton === 'Đủ' ? 'green' : selectedButton === 'Vắng' ? 'red' : 'yellow' }]}>
+    {' '}{selectedButton}{' '}
+  </Text>
+  cho ngày {selectedDay.format('DD-MM-YYYY')}?
+</Text>
+          <View style={styles.confirmModalButtons}>
+            <TouchableOpacity onPress={updateOrAddAttendance} style={styles.confirmButton}>
+              <Text style={styles.confirmButtonText}>Yes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleModalClose} style={styles.cancelButton}>
+              <Text style={styles.cancelButtonText}>No</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      )}
-    </ScrollView>
+      </View>
+    )}
+  </>
+  
   );
 }
 
@@ -344,19 +357,35 @@ const styles = StyleSheet.create({
 },
 
 
-  confirmModalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  confirmModalContent: {
-    width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-  },
+confirmModalContainer: {
+  position: 'absolute', // Giúp modal phủ toàn bộ màn hình
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  justifyContent: 'center', // Canh giữa theo chiều dọc
+  alignItems: 'center', // Canh giữa theo chiều ngang
+  backgroundColor: 'rgba(0, 0, 0, 0.5)', // Làm mờ nền
+},
+
+confirmModalContent: {
+  width: '80%',
+  backgroundColor: 'white',
+  borderRadius: 10,
+  padding: 20,
+  alignItems: 'center',
+  position: 'relative', // Đảm bảo nội dung modal không bị ảnh hưởng bởi absolute
+  elevation: 5, // Thêm shadow trên Android
+  shadowColor: '#000', // Thêm shadow trên iOS
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.25,
+  shadowRadius: 4,
+},
+confirmModalStatus: {
+  fontWeight: 'bold',
+},
+
+
   confirmModalMessage: {
     fontSize: 16,
     textAlign: 'center',
