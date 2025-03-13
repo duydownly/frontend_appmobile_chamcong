@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ChangePasswordE = ({ navigation }) => {
+const ChangePasswordA = () => {
+  const navigation = useNavigation();
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -19,21 +21,21 @@ const ChangePasswordE = ({ navigation }) => {
     }
 
     try {
-      // Lấy employee_id từ AsyncStorage
-      const employeeId = await AsyncStorage.getItem('employee_id');
-      if (!employeeId) {
+      // Lấy admin_id từ AsyncStorage
+      const adminId = await AsyncStorage.getItem('admin_id');
+      if (!adminId) {
         Alert.alert('Lỗi', 'Không tìm thấy thông tin người dùng.');
         return;
       }
 
       // Gọi API đổi mật khẩu
-      const response = await fetch('https://backendapperss.onrender.com/changepasswordemployee', {
+      const response = await fetch('https://backendapperss.onrender.com/changepasswordadmin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          employee_id: employeeId, // Sử dụng employee_id từ AsyncStorage
+          admin_id: adminId, // Sử dụng admin_id lấy từ AsyncStorage
           password: currentPassword,
           new_password: newPassword,
         }),
@@ -43,7 +45,8 @@ const ChangePasswordE = ({ navigation }) => {
 
       if (response.ok) {
         Alert.alert('Thành công', data.message);
-        navigation.navigate('HomeEmployee');
+        // Điều hướng đến HomeAdmin và chọn tab Day
+        navigation.navigate('HomeAdmin', { initialRouteName: 'Day' });
       } else {
         Alert.alert('Lỗi', data.error || 'Đổi mật khẩu thất bại.');
       }
@@ -114,7 +117,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   button: {
-    backgroundColor: 'red',
+    backgroundColor: '#5e749e',
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
@@ -127,4 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChangePasswordE;
+export default ChangePasswordA;

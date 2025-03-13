@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-
+import { CommonActions } from '@react-navigation/native';
 export default function AccountScreen() {
   const navigation = useNavigation();
   const [name, setName] = useState('');
@@ -24,16 +24,24 @@ export default function AccountScreen() {
       console.log('Removing Admin ID:', admin_id);
       await AsyncStorage.removeItem('admin_id');
     }
-
+  
     const storedName = await AsyncStorage.getItem('name');
     if (storedName) {
       console.log('Removing Name:', storedName);
       await AsyncStorage.removeItem('name');
     }
-
-    navigation.navigate('LoginAdmin');
+  
+    // Reset navigation stack và chuyển đến màn hình SelectRoll
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0, // Đặt index về 0 để chỉ hiển thị màn hình đầu tiên trong stack
+        routes: [{ name: 'SelectRoll' }], // Thay 'SelectRoll' bằng tên màn hình bạn muốn chuyển đến
+      })
+    );
   };
-
+const handleChangepassword = async () => {
+  navigation.navigate('ChangePasswordA');
+}
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -57,7 +65,7 @@ export default function AccountScreen() {
           <Ionicons name="key-outline" size={24} color="#5e749e" />
           <Text style={styles.menuText}>Nhập mã kích hoạt</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity style={styles.menuItem} onPress={handleChangepassword}>
           <Ionicons name="lock-closed-outline" size={24} color="#5e749e" />
           <Text style={styles.menuText}>Đổi mật khẩu</Text>
         </TouchableOpacity>

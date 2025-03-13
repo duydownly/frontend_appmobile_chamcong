@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
   },
 
   pickerContainer: {
-    marginTop: 50,
+    marginTop: 20,
     padding: 10,
     backgroundColor: '#5e749e',
     alignItems: 'center',

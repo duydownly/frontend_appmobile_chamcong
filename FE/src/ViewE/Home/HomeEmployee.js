@@ -8,7 +8,7 @@ import AttendancePage1 from './Attendance/AttendancePage/AttendancePage1';
 import AttendancePage2 from './Attendance/AttendancePage/AttendancePage2';
 import AttendancePage3 from './Attendance/AttendancePage/AttendancePage3';
 import MonthScreen from './Month/MonthScreen';
-import AccountScreen from './Account/Account';
+import AccountScreenE from './Account/AccountScreenE';
 import Options from './Options/Options';
 import BASE_URL from '../../Url'; // ✅ Đúng đường dẫn tương đối
 
@@ -73,68 +73,60 @@ export default function Home() {
   }
 
   return (
-    <Tab.Navigator
-      initialRouteName="Attendance"
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ color, size }) => {
-          let iconName;
-          switch (route.name) {
-            case 'Attendance':
-              iconName = 'clipboard-check';
-              break;
-            case 'Month':
-              iconName = 'calendar-month';
-              break;
-            case 'Options':
-              iconName = 'cogs';
-              break;
-            case 'Account':
-              iconName = 'account-circle';
-              break;
-            default:
-              iconName = 'calendar-today';
-          }
-          return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: 'tomato',
-        inactiveTintColor: 'gray',
-        labelStyle: {
-          fontSize: 12,
-        },
-      }}
-    >
-      <Tab.Screen
-        name="Attendance"
-        
-        options={{ tabBarLabel: 'Chấm công',
-          headerShown: false 
-         }}
-      >
-        {() => <AttendanceNavigator initialPage={initialPage} />}
-      </Tab.Screen>
-      <Tab.Screen
-        name="Month"
-        component={MonthScreen}
-        options={{ tabBarLabel: 'Tháng',
-          headerShown: false 
-         }}
-      />
-      <Tab.Screen
-        name="Options"
-        component={Options}
-        options={{ tabBarLabel: 'Tùy chọn',
-          headerShown: false 
-         }}
-      />
-      <Tab.Screen
-        name="Account"
-        component={AccountScreen}
-        options={{ tabBarLabel: 'Tài khoản',
-          headerShown: false 
-         }}
-      />
-    </Tab.Navigator>
+<Tab.Navigator
+  initialRouteName="Attendance"
+  screenOptions={({ route }) => ({
+    tabBarIcon: ({ color, size }) => {
+      let iconName;
+      switch (route.name) {
+        case 'Attendance':
+          iconName = 'clipboard-check';
+          break;
+        case 'Month':
+          iconName = 'calendar-month';
+          break;
+        case 'Options':
+          iconName = 'cogs';
+          break;
+        case 'Account':
+          iconName = 'account-circle';
+          break;
+        default:
+          iconName = 'calendar-today';
+      }
+      return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
+    },
+    tabBarActiveTintColor: 'red', // Màu đỏ cho tab đang hoạt động
+    tabBarInactiveTintColor: 'gray', // Màu xám cho các tab không hoạt động
+    tabBarLabelStyle: {
+      fontSize: 12,
+    },
+    tabBarStyle: {
+      backgroundColor: 'white', // Màu nền của tab bar
+    },
+  })}
+>
+  <Tab.Screen
+    name="Attendance"
+    options={{ tabBarLabel: 'Chấm công', headerShown: false }}
+  >
+    {() => <AttendanceNavigator initialPage={initialPage} />}
+  </Tab.Screen>
+  <Tab.Screen
+    name="Month"
+    component={MonthScreen}
+    options={{ tabBarLabel: 'Tháng', headerShown: false }}
+  />
+  <Tab.Screen
+    name="Options"
+    component={Options}
+    options={{ tabBarLabel: 'Tùy chọn', headerShown: false }}
+  />
+  <Tab.Screen
+    name="Account"
+    component={AccountScreenE}
+    options={{ tabBarLabel: 'Tài khoản', headerShown: false }}
+  />
+</Tab.Navigator>
   );
 }

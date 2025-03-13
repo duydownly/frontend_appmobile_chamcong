@@ -3,8 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'reac
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ActionSheet from 'react-native-actionsheet';
 import BASE_URL from '../../../../Url'; // ✅ Đường dẫn tương đối chính xác
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
 const UpdateEmployee = () => {
+    const navigation = useNavigation();
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [employeeInfo, setEmployeeInfo] = useState({});
   const [initialEmployeeInfo, setInitialEmployeeInfo] = useState({});
@@ -118,6 +120,7 @@ const UpdateEmployee = () => {
 
       setIsModified(false);
       Alert.alert('Thông báo', 'Cập nhật thông tin thành công.');
+      navigation.navigate('HomeAdmin', { initialRouteName: 'Day' });
 
     } catch (error) {
       console.error('Error updating employee information:', error);

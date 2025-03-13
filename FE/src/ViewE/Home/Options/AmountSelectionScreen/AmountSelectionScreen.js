@@ -3,9 +3,11 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, Modal, Alert 
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BASE_URL from '../../../../Url'; // ✅ Đúng đường dẫn tương đối
+import BASE_URL from '../../../../Url';
+import { useNavigation } from '@react-navigation/native'; // Import useNavigation
 
 const AmountSelectionScreen = () => {
+  const navigation = useNavigation(); // Sử dụng hook useNavigation
   const [selectedAmount, setSelectedAmount] = useState(0);
   const [inputAmount, setInputAmount] = useState('');
   const [employeeId, setEmployeeId] = useState(null);
@@ -13,7 +15,6 @@ const AmountSelectionScreen = () => {
   const [reason, setReason] = useState('');
 
   useEffect(() => {
-    // Lấy employee_id từ AsyncStorage
     const fetchEmployeeId = async () => {
       try {
         const storedId = await AsyncStorage.getItem('employee_id');
@@ -41,10 +42,8 @@ const AmountSelectionScreen = () => {
   };
 
   const handleConfirm = () => {
-    const sanitizedAmount = inputAmount.replace(/\./g, '').replace(/,/g, ''); // Loại bỏ dấu . và ,
-    const numericAmount = parseInt(sanitizedAmount, 10); // Chuyển thành số nguyên
-  
-    console.log("Số tiền sau khi xử lý:", numericAmount); // Debug log
+    const sanitizedAmount = inputAmount.replace(/\./g, '').replace(/,/g, '');
+    const numericAmount = parseInt(sanitizedAmount, 10);
   
     if (!numericAmount || numericAmount === 0) {
       Alert.alert('Lỗi', 'Vui lòng nhập số tiền hợp lệ.');
@@ -74,16 +73,24 @@ const AmountSelectionScreen = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           employee_id: employeeId,
-          amount: numericAmount , // Nhân 1000 trước khi gửi
+          amount: numericAmount,
           reason: reason.trim(),
         }),
       });
   
       const data = await response.json();
       if (response.ok) {
-        Alert.alert('Thành công', 'Yêu cầu ứng tiền đã được gửi.');
-        setModalVisible(false);
-        setReason('');
+        // Hiển thị thông báo thành công với nút OK, sau đó chuyển về trang HomeEmployee
+        Alert.alert('Thành công', 'Yêu cầu ứng tiền đã được gửi.', [
+          {
+            text: 'OK',
+            onPress: () => {
+              setModalVisible(false);
+              setReason('');
+              navigation.navigate('HomeEmployee');
+            },
+          },
+        ]);
       } else {
         Alert.alert('Lỗi', data.error || 'Gửi yêu cầu thất bại.');
       }
@@ -121,7 +128,6 @@ const AmountSelectionScreen = () => {
         <Text style={styles.confirmButtonText}>Xác nhận</Text>
       </TouchableOpacity>
 
-      {/* Modal nhập lý do */}
       <Modal visible={modalVisible} transparent animationType="slide">
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -178,8 +184,6 @@ const styles = StyleSheet.create({
     height: 60,
   },
   confirmButtonText: { color: '#fff', fontSize: 24, fontWeight: 'bold' },
-
-  // Modal styles
   modalContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.5)' },
   modalContent: { width: '80%', padding: 20, backgroundColor: '#fff', borderRadius: 10 },
   modalTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' },

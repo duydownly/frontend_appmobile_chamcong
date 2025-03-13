@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native'; // Import CommonActions
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import BASE_URL from '../../../Url'; // ✅ Đúng đường dẫn tương đối
@@ -45,7 +45,14 @@ export default function AccountScreen() {
       console.log('Removing employee_id:', employee_id);
       await AsyncStorage.removeItem('employee_id');
       console.log('employee_id removed from AsyncStorage');
-      navigation.navigate('LoginEmployee');
+
+      // Reset navigation stack và chuyển đến màn hình SelectRoll
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0, // Đặt index về 0 để chỉ hiển thị màn hình đầu tiên trong stack
+          routes: [{ name: 'SelectRoll' }], // Thay 'SelectRoll' bằng tên màn hình bạn muốn chuyển đến
+        })
+      );
     } else {
       console.log('No employee_id found in AsyncStorage');
       navigation.navigate('LoginEmployee');
@@ -156,4 +163,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-});
+});  

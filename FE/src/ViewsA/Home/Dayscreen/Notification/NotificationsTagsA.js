@@ -91,7 +91,7 @@ const NotificationTagsA = ({ route, navigation }) => {
         updateNotificationStatus('Rejected');
         Alert.alert('Thành công', 'Yêu cầu đã bị từ chối.');
         setIsRejectModalVisible(false);
-        navigation.navigate('Day'); // Chuyển hướng đến trang Day
+        navigation.navigate('HomeAdmin', { initialRouteName: 'Day' });
 
       } else {
         Alert.alert('Lỗi', 'Không thể từ chối yêu cầu.');
@@ -187,6 +187,7 @@ const NotificationTagsA = ({ route, navigation }) => {
                     <Text style={styles.modalTitle}>Ứng tiền: {selectedNotification.name}</Text>
                     <Text style={styles.modalDescription}>Số tiền: {selectedNotification.amount} VND</Text>
                     <Text style={styles.modalDescription}>Lý do: {selectedNotification.reason}</Text>
+                    <Text style={styles.modalDescription}>Lý do từ chối: {selectedNotification.rejection_reason}</Text>
                     <Text style={styles.modalTime}>Ngày tạo: {formatDate(selectedNotification.created_at)}</Text>
                     {activeTab === 'Notifications' && (
                       <View style={styles.modalButtons}>

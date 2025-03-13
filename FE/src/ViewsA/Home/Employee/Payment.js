@@ -159,7 +159,7 @@ const Payment = () => {
           {
             text: 'OK',
             onPress: () => {
-              navigation.navigate('Day');
+              navigation.navigate('HomeAdmin', { initialRouteName: 'Day' });
             },
           },
         ]);

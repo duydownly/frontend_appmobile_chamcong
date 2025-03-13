@@ -100,7 +100,7 @@ const PayrollCalculationMethod = () => {
         
         // Thêm thông báo hoàn thành
         Alert.alert('Thành công', 'Thêm nhân viên thành công!', [
-          { text: 'OK', onPress: () => navigation.navigate('Home') }
+          { text: 'OK', onPress: () =>         navigation.navigate('HomeAdmin', { initialRouteName: 'Day' })}
         ]);
   
       } else {
